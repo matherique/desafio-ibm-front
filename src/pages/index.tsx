@@ -14,7 +14,7 @@ function Home(): JSX.Element {
     const timetoutId = setTimeout(() => {
       fetch(searchUrl(query))
         .then(res => res.json())
-        .then(res => setBooks(res))
+        .then(res => setBooks(res.books))
         .catch(() => {
           setBooks([])
           setError(true)
