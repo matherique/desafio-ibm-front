@@ -1,6 +1,5 @@
-import React from 'react'
+import * as React from 'react'
 import Link from 'next/link'
-import api from 'services/api'
 
 type BookInfo = {
   id: string
@@ -40,36 +39,25 @@ function BookItem({
 }
 
 function Home(): JSX.Element {
-  const [query, setQuery] = React.useState<string>('')
-  const [bookList, setBookList] = React.useState<BookInfo[]>([])
+  const [query, setQuery] = React.useState('')
+  const [books, setBooks] = React.useState<BookInfo[]>([])
+  const [error, setError] = React.useState(false)
 
-  async function getBookData() {
-    try {
-      if (!query || query.length <= 4) return
-
-      const { data } = await api.get(`?q=${encodeURIComponent(query)}`)
-      const bookData = data.items.map(book => {
-        const { id, volumeInfo } = book
-        return {
-          id: Number(id),
-          link: volumeInfo.selfLink,
-          title: volumeInfo.title,
-          subtitle: volumeInfo.subtitle,
-          authors: volumeInfo.authors,
-          description: volumeInfo.description,
-          smallThumbnail: volumeInfo?.imageLinks?.smallThumbnail,
-          thumbnail: volumeInfo?.imageLinks?.thumbnail
-        }
-      })
-
-      setBookList(bookData)
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  const searchUrl = (term: string) => `/api/search?q=${encodeURI(term)}`
 
   React.useEffect(() => {
-    getBookData()
+    if (!query.length) return
+    const timetoutId = setTimeout(() => {
+      fetch(searchUrl(query))
+        .then(res => res.json())
+        .then(res => setBooks(res))
+        .catch(() => {
+          setBooks([])
+          setError(true)
+        })
+    }, 500)
+
+    return () => clearTimeout(timetoutId)
   }, [query])
 
   return (
@@ -80,7 +68,8 @@ function Home(): JSX.Element {
         onChange={e => setQuery(e.target.value)}
       />
       {query ? <p>resultados para: {query}</p> : null}
-      {bookList.map(book => (
+      {error ? <p style={{ color: '#f00' }}>something went wrong</p> : null}
+      {books.map(book => (
         <BookItem
           key={book.id}
           id={book.id}
