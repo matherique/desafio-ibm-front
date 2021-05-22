@@ -1,16 +1,6 @@
 import * as React from 'react'
 import Link from 'next/link'
-
-type BookInfo = {
-  id: string
-  link: string
-  title: string
-  subtitle: string
-  authors: string[]
-  description: string
-  smallThumbnail: string
-  thumbnail: string
-}
+import { BookInfo } from '../types'
 
 type BookItemProps = {
   id: string
