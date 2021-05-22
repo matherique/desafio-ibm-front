@@ -1,32 +1,6 @@
+import BookList from 'components/book-list'
 import * as React from 'react'
-import Link from 'next/link'
 import { BookInfo } from '../types'
-
-type BookItemProps = {
-  id: string
-  title: string
-  subtitle: string
-  smallThumbnail: string
-}
-
-function BookItem({
-  id,
-  title,
-  subtitle,
-  smallThumbnail
-}: BookItemProps): JSX.Element {
-  return (
-    <article>
-      <img src={smallThumbnail} />
-      <h3>
-        <Link href={`/book/${id}`}>
-          <a>{title}</a>
-        </Link>
-      </h3>
-      <h4>{subtitle}</h4>
-    </article>
-  )
-}
 
 function Home(): JSX.Element {
   const [query, setQuery] = React.useState('')
@@ -59,15 +33,8 @@ function Home(): JSX.Element {
       />
       {query ? <p>resultados para: {query}</p> : null}
       {error ? <p style={{ color: '#f00' }}>something went wrong</p> : null}
-      {books.map(book => (
-        <BookItem
-          key={book.id}
-          id={book.id}
-          smallThumbnail={book.smallThumbnail}
-          title={book.title}
-          subtitle={book.subtitle}
-        />
-      ))}
+
+      <BookList books={books} />
     </div>
   )
 }
