@@ -39,9 +39,9 @@ function BookList({ books }: BookListProps): JSX.Element {
         <BookItem
           key={book.id}
           id={book.id}
-          smallThumbnail={book.smallThumbnail}
-          title={book.title}
-          subtitle={book.subtitle}
+          smallThumbnail={book.volumeInfo.imageLinks.smallThumbnail}
+          title={book.volumeInfo.title}
+          subtitle={book.volumeInfo.subtitle}
         />
       ))}
     </div>
