@@ -3,7 +3,6 @@ import { BookInfo } from 'types'
 
 type AppState = {
   query: string
-  favorites: Pick<BookInfo, 'id'>[]
   loading: boolean
   error: string
   books: BookInfo[]
@@ -15,17 +14,17 @@ type AppAction = {
   type: 'TYPING' | 'SEARCHING' | 'SUCCESS' | 'FAIL' | 'PAGE'
   payload?: {
     query?: string
-    favorite?: BookInfo
     books?: BookInfo[]
     error?: string
     index?: number
     total?: number
+    book?: BookInfo
+    id?: string
   }
 }
 
 const initialState: AppState = {
   query: '',
-  favorites: [],
   loading: false,
   error: '',
   books: [],
