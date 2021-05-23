@@ -1,20 +1,32 @@
-import { NextApiRequest, NextApiResponse } from 'next'
 import api from 'services/api'
 import { SearchResponse } from 'types'
 import { parseBookInfo } from 'utils/parser'
 
 const TEMPO_CACHE = 60 * 60
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-): Promise<void> {
-  const { q, startIndex } = req.query as { q: string; startIndex: string }
+export type Request = {
+  query: {
+    q: string
+    startIndex: number
+  }
+}
 
-  if (!q || q.length <= 4) return res.send({ books: [] })
+export interface Response {
+  json: (body: any) => void
+  setHeader: (name: string, value: string) => void
+  status: (code: number) => void
+}
+
+export default async function handler(
+  req: Request,
+  res: Response
+): Promise<void> {
+  const { q, startIndex } = req.query
+
+  if (!q || q.length <= 4) return res.json({ books: [] })
 
   const { data } = await api.get<SearchResponse>(
-    `?q=${encodeURI(q)}&startIndex=${startIndex}`
+    `?q=${encodeURI(q)}&startIndex=${startIndex || 0}`
   )
 
   const bookList = data.items.map(parseBookInfo)
@@ -23,7 +35,8 @@ export default async function handler(
     `s-maxage=${TEMPO_CACHE}, stale-while-revalidate`
   )
   res.setHeader('Content-Type', 'application/json')
-  res.status(200).json({
+  res.status(200)
+  res.json({
     total: data.totalItems,
     books: bookList
   })
