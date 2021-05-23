@@ -14,6 +14,8 @@ function Book({ router }: BookProps): JSX.Element {
 
   const bookUrl = (id: string) => `/api/book?id=${id}`
 
+  if (!id) return <p>carregando...</p>
+
   const { data } = useFetch<BookInfo>(bookUrl(id))
 
   if (!router.isReady || !data) return <p>carregando...</p>
@@ -21,7 +23,7 @@ function Book({ router }: BookProps): JSX.Element {
   return (
     <>
       <BookDetails info={data} />
-      <button onClick={() => router.push('/')}>voltar</button>
+      <button onClick={() => router.back()}>voltar</button>
     </>
   )
 }
