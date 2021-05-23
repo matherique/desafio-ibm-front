@@ -25,9 +25,11 @@ export default async function handler(
 
   if (!q || q.length <= 4) return res.json({ books: [] })
 
-  const { data } = await api.get<SearchResponse>(
+  const resp = await api.get<SearchResponse>(
     `?q=${encodeURI(q)}&startIndex=${startIndex || 0}`
   )
+
+  const { data } = resp
 
   const bookList = data.items.map(parseBookInfo)
   res.setHeader(
