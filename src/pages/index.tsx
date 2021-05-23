@@ -7,26 +7,31 @@ const DEFAULT_START_INDEX = 0
 
 function Home(): JSX.Element {
   const [startIndex, setStartIndex] = React.useState(DEFAULT_START_INDEX)
-  const [totalItemsFound, setTotalBooksFound] = React.useState<number>(0)
+  const [totalItemsFound, setTotalBooksFound] = React.useState(0)
   const [query, setQuery] = React.useState('')
   const [books, setBooks] = React.useState<BookInfo[]>([])
   const [error, setError] = React.useState(false)
+  const [loading, setLoading] = React.useState(false)
 
   const searchUrl = (term: string, index: number) =>
     `/api/search?q=${encodeURI(term)}&startIndex=${index}`
 
   React.useEffect(() => {
     if (!query.length) return
+    setLoading(true)
     const timetoutId = setTimeout(() => {
       fetch(searchUrl(query, startIndex))
         .then(res => res.json())
         .then(res => {
           setTotalBooksFound(res.total)
           setBooks(res.books)
+          setLoading(false)
         })
         .catch(() => {
+          setTotalBooksFound(0)
           setBooks([])
           setError(true)
+          setLoading(false)
         })
     }, 500)
 
@@ -51,9 +56,10 @@ function Home(): JSX.Element {
         onChange={e => setQuery(e.target.value)}
       />
       {error ? <p style={{ color: '#f00' }}>something went wrong</p> : null}
+      {loading && !books.length ? <p>carregando...</p> : null}
       {books.length ? (
         <>
-          <p>{query ? `resultados para: ${query}` : null}</p>
+          <p>resultados para: {query}</p>
           <p>foi encontrado: {totalItemsFound} resultados</p>
           <button disabled={startIndex === 0} onClick={() => handlePrev()}>
             prev
@@ -64,7 +70,7 @@ function Home(): JSX.Element {
           >
             next
           </button>
-          <BookList books={books} />
+          {!loading ? <BookList books={books} /> : <p>carregando...</p>}
         </>
       ) : null}
     </div>
