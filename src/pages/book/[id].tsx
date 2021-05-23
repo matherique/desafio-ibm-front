@@ -12,8 +12,7 @@ type BookProps = {
 function Book({ router }: BookProps): JSX.Element {
   const id = router.query.id as string
 
-  const bookUrl = (id: string) =>
-    `https://www.googleapis.com/books/v1/volumes/${id}`
+  const bookUrl = (id: string) => `/api/book?id=${id}`
 
   const { data } = useFetch<BookInfo>(bookUrl(id))
 
