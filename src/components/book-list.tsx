@@ -1,5 +1,5 @@
-import Link from 'next/link'
 import * as React from 'react'
+import Link from 'next/link'
 import type { BookInfo } from 'types'
 
 type BookItemProps = {
@@ -42,15 +42,19 @@ type BookListProps = {
 function BookList({ books }: BookListProps): JSX.Element {
   return (
     <div>
-      {books.map(book => (
-        <BookItem
-          key={book.id}
-          id={book.id}
-          smallThumbnail={book.volumeInfo.imageLinks.smallThumbnail}
-          title={book.volumeInfo.title}
-          subtitle={book.volumeInfo.subtitle}
-        />
-      ))}
+      {books.length ? (
+        books.map(book => (
+          <BookItem
+            key={book.id}
+            id={book.id}
+            smallThumbnail={book.volumeInfo.imageLinks.smallThumbnail}
+            title={book.volumeInfo.title}
+            subtitle={book.volumeInfo.subtitle}
+          />
+        ))
+      ) : (
+        <p>no book found</p>
+      )}
     </div>
   )
 }
