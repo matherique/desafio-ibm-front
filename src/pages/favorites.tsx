@@ -1,13 +1,14 @@
 import * as React from 'react'
-import BookList from 'components/book-list'
-import { BookInfo } from 'types'
+import BookList from '../components/book-list'
+import { BookInfo } from '../types'
+import { FAVORITES } from '../constants'
 
 function Favorites(): JSX.Element {
   const [books, setBooks] = React.useState<BookInfo[]>([])
 
   React.useEffect(() => {
     const favorites =
-      (JSON.parse(localStorage.getItem('favorites_books')) as BookInfo[]) || []
+      (JSON.parse(localStorage.getItem(FAVORITES)) as BookInfo[]) || []
     setBooks(favorites)
   }, [])
 
