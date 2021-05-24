@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { BookInfo } from 'types'
 
-type AppState = {
+export type AppState = {
   query: string
   loading: boolean
   error: string
@@ -10,7 +10,7 @@ type AppState = {
   total: number
 }
 
-type AppAction = {
+export type AppAction = {
   type: 'TYPING' | 'SEARCHING' | 'SUCCESS' | 'FAIL' | 'PAGE'
   payload?: {
     query?: string
@@ -36,7 +36,8 @@ type AppContextType = {
   state: AppState
   dispatch: (action: AppAction) => void
 }
-const AppContext = React.createContext<AppContextType | undefined>(undefined)
+export const AppContext =
+  React.createContext<AppContextType | undefined>(undefined)
 
 export function appReducer(state: AppState, action: AppAction): AppState {
   switch (action.type) {

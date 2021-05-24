@@ -16,15 +16,22 @@ function BookItem({
   smallThumbnail
 }: BookItemProps): JSX.Element {
   return (
-    <article>
-      <img src={smallThumbnail} />
-      <h3>
-        <Link href={`/book/${id}`}>
-          <a>{title}</a>
-        </Link>
-      </h3>
-      <h4>{subtitle}</h4>
-    </article>
+    <div>
+      <div>
+        <img src={smallThumbnail} />
+      </div>
+      <div>
+        <header>
+          <h3>
+            <Link href={`/book/${id}`}>
+              <a>{title}</a>
+            </Link>
+          </h3>
+          <h4>{subtitle}</h4>
+        </header>
+        <p>description</p>
+      </div>
+    </div>
   )
 }
 

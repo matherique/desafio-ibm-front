@@ -1,3 +1,4 @@
+import { FAVORITES } from '../constants'
 import * as React from 'react'
 import { BookInfo } from 'types'
 
@@ -10,24 +11,24 @@ function BookDetails({ info }: BookDetailsProps): JSX.Element {
 
   React.useEffect(() => {
     const favorites =
-      (JSON.parse(localStorage.getItem('favorites_books')) as BookInfo[]) || []
+      (JSON.parse(localStorage.getItem(FAVORITES)) as BookInfo[]) || []
 
     setIsFavorite(favorites.some(book => book.id === info.id))
   }, [])
 
   function handleAddFavorite() {
     const favorites =
-      (JSON.parse(localStorage.getItem('favorites_books')) as BookInfo[]) || []
+      (JSON.parse(localStorage.getItem(FAVORITES)) as BookInfo[]) || []
     const newfavorites = [...favorites, info]
-    localStorage.setItem('favorites_books', JSON.stringify(newfavorites))
+    localStorage.setItem(FAVORITES, JSON.stringify(newfavorites))
     setIsFavorite(true)
   }
 
   function handleRemoveFavorite() {
     const favorites =
-      (JSON.parse(localStorage.getItem('favorites_books')) as BookInfo[]) || []
+      (JSON.parse(localStorage.getItem(FAVORITES)) as BookInfo[]) || []
     const newfavorites = favorites.filter(book => book.id !== info.id)
-    localStorage.setItem('favorites_books', JSON.stringify(newfavorites))
+    localStorage.setItem(FAVORITES, JSON.stringify(newfavorites))
     setIsFavorite(false)
   }
 

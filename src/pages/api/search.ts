@@ -1,12 +1,12 @@
-import api from 'services/api'
-import { SearchResponse } from 'types'
-import { parseBookInfo } from 'utils/parser'
+import api from '../../services/google-api'
+import { SearchResponse } from '../../types'
+import { parseBookInfo } from '../../utils/parser'
 
 const TEMPO_CACHE = 60 * 60
 
 export type Request = {
   query: {
-    q: string
+    q?: string
     startIndex: number
   }
 }
@@ -23,23 +23,32 @@ export default async function handler(
 ): Promise<void> {
   const { q, startIndex } = req.query
 
-  if (!q || q.length <= 4) return res.json({ books: [] })
+  if (!q?.length) {
+    res.status(400)
+    res.json({ message: 'missing query' })
+    return
+  }
 
-  const resp = await api.get<SearchResponse>(
-    `?q=${encodeURI(q)}&startIndex=${startIndex || 0}`
-  )
+  try {
+    const resp = await api.get<SearchResponse>(
+      `?q=${encodeURI(q)}&startIndex=${startIndex || 0}`
+    )
 
-  const { data } = resp
+    const { data } = resp
 
-  const bookList = data.items.map(parseBookInfo)
-  res.setHeader(
-    'Cache-Control',
-    `s-maxage=${TEMPO_CACHE}, stale-while-revalidate`
-  )
-  res.setHeader('Content-Type', 'application/json')
-  res.status(200)
-  res.json({
-    total: data.totalItems,
-    books: bookList
-  })
+    const bookList = data.items.map(parseBookInfo)
+    res.setHeader(
+      'Cache-Control',
+      `s-maxage=${TEMPO_CACHE}, stale-while-revalidate`
+    )
+    res.setHeader('Content-Type', 'application/json')
+    res.status(200)
+    res.json({
+      total: data.totalItems,
+      books: bookList
+    })
+  } catch (error) {
+    res.status(500)
+    res.json({ message: 'something went wrong' })
+  }
 }

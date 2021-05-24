@@ -1,31 +1,46 @@
 import * as React from 'react'
-import { NextRouter, withRouter } from 'next/router'
+import { useRouter, withRouter } from 'next/router'
 
-import BookDetails from 'components/book-details'
-import { useFetch } from 'utils/useFetch'
-import { BookInfo } from 'types'
+import BookDetails from '../../components/book-details'
+import { BookInfo } from '../../types'
+import api from '../../services/api'
 
 type BookProps = {
-  router: NextRouter
+  id: string
 }
 
-function Book({ router }: BookProps): JSX.Element {
-  const id = router.query.id as string
-
+export function Book({ id }: BookProps): JSX.Element {
+  const router = useRouter()
+  const [book, setBook] = React.useState<BookInfo | undefined>()
+  const [error, setError] = React.useState('')
   const bookUrl = (id: string) => `/api/book?id=${id}`
 
-  if (!id) return <p>carregando...</p>
+  async function getData(idBook: string) {
+    try {
+      const { data } = await api.get(bookUrl(idBook))
+      setBook(data)
+    } catch (error) {
+      setError('something went wrong')
+    }
+  }
 
-  const { data } = useFetch<BookInfo>(bookUrl(id))
-
-  if (!router.isReady || !data) return <p>carregando...</p>
+  React.useEffect(() => {
+    getData(id)
+  }, [id])
 
   return (
     <>
-      <BookDetails info={data} />
+      {error ? <p>{error}</p> : null}
+      {book ? <BookDetails info={book} /> : <p>carregando...</p>}
       <button onClick={() => router.back()}>voltar</button>
     </>
   )
 }
 
-export default withRouter(Book)
+export default withRouter(function ({ router }) {
+  const id = router.query.id as string
+
+  if (!router.isReady || !id) return <p>carregando...</p>
+
+  return <Book id={id} />
+})

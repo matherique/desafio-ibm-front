@@ -1,10 +1,10 @@
-import api from 'services/api'
-import { BookInfo } from 'types'
-import { parseBookInfo } from 'utils/parser'
+import api from '../../services/google-api'
+import { BookInfo } from '../../types'
+import { parseBookInfo } from '../../utils/parser'
 
 export type Request = {
   query: {
-    id: string
+    id?: string
   }
 }
 
@@ -18,15 +18,23 @@ export default async function handler(
   req: Request,
   res: Response
 ): Promise<void> {
-  const { id } = req.query
+  try {
+    const { id } = req.query
 
-  if (!id) return res.status(400)
+    if (!id) {
+      res.status(400)
+      return
+    }
 
-  const { data } = await api.get<BookInfo>(`/${id}`)
+    const { data } = await api.get<BookInfo>(`/${id}`)
 
-  const book = parseBookInfo(data)
+    const book = parseBookInfo(data)
 
-  res.setHeader('Content-Type', 'application/json')
-  res.status(200)
-  res.json(book)
+    res.setHeader('Content-Type', 'application/json')
+    res.status(200)
+    res.json(book)
+  } catch (error) {
+    res.status(500)
+    res.json({ message: 'something went wrong' })
+  }
 }
