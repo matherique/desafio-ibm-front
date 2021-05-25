@@ -32,7 +32,7 @@ describe('API - /api/search', () => {
     await searchHandler(req, res)
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
-      `?q=${encodeURI(q)}&startIndex=${startIndex}`
+      `?q=${encodeURI(q)}&orderBy=newest&startIndex=${startIndex}`
     )
     expect(res.json).toHaveBeenCalledWith({ total: 1, books: [buildBook()] })
     expect(res.status).toHaveBeenCalledWith(200)
@@ -63,7 +63,7 @@ describe('API - /api/search', () => {
     await searchHandler(req, res)
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
-      `?q=${encodeURI(q)}&startIndex=${startIndex}`
+      `?q=${encodeURI(q)}&orderBy=newest&startIndex=${startIndex}`
     )
     expect(res.json).toHaveBeenCalledWith({ message: 'something went wrong' })
     expect(res.status).toHaveBeenCalledWith(500)

@@ -1,10 +1,38 @@
 import * as React from 'react'
+import styled from 'styled-components'
 import BookList from '../components/book-list'
 import { useApp } from '../context/app-context'
+import Button from '../components/button'
 import api from '../services/api'
+import Link from 'next/link'
 
 const PER_PAGE = 10
 
+const Container = styled.div`
+  padding: 10px;
+`
+
+const Search = styled.input`
+  width: 100%;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 2rem;
+`
+
+const Pagination = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
+
+const ResultInfo = styled.p`
+  padding: 5px;
+`
+
+const FavoriteLink = styled.p`
+  padding: 5px;
+  text-align: right;
+`
 function Home(): JSX.Element {
   const { state, dispatch } = useApp()
   const { books, query, index, error, total, loading } = state
@@ -56,8 +84,13 @@ function Home(): JSX.Element {
   )
 
   return (
-    <div>
-      <input
+    <Container>
+      <FavoriteLink>
+        <Link href="/favorites">
+          <a>ver favoritos</a>
+        </Link>
+      </FavoriteLink>
+      <Search
         placeholder="buscar"
         name="search"
         value={query}
@@ -68,20 +101,22 @@ function Home(): JSX.Element {
       {error ? <p data-testid="error">{error}</p> : null}
       {books.length ? (
         <>
-          <p>resultados para: {query}</p>
-          <button disabled={index === 0} onClick={() => handlePrev()}>
-            prev
-          </button>
-          <button
-            disabled={index + PER_PAGE > total}
-            onClick={() => handleNext()}
-          >
-            next
-          </button>
+          <ResultInfo>resultados para: {query}</ResultInfo>
           {!loading ? <BookList books={books} /> : <p>carregando...</p>}
+          <Pagination>
+            <Button disabled={index === 0} onClick={() => handlePrev()}>
+              {'<<'}
+            </Button>
+            <Button
+              disabled={index + PER_PAGE > total}
+              onClick={() => handleNext()}
+            >
+              {'>>'}
+            </Button>
+          </Pagination>
         </>
       ) : null}
-    </div>
+    </Container>
   )
 }
 

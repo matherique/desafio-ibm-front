@@ -31,7 +31,7 @@ export default async function handler(
 
   try {
     const resp = await api.get<SearchResponse>(
-      `?q=${encodeURI(q)}&startIndex=${startIndex || 0}`
+      `?q=${encodeURI(q)}&orderBy=newest&startIndex=${startIndex || 0}`
     )
 
     const { data } = resp

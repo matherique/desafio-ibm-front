@@ -1,10 +1,44 @@
-import { FAVORITES } from '../constants'
 import * as React from 'react'
-import { BookInfo } from 'types'
+import styled from 'styled-components'
+import { FAVORITES } from '../constants'
+import { BookInfo } from '../types'
 
 type BookDetailsProps = {
   info: BookInfo
 }
+
+const Container = styled.div`
+  display: flex;
+  gap: 20px;
+
+  @media (max-width: 800px) {
+    flex-direction: column;
+  }
+`
+const BookImage = styled.div`
+  & > img {
+    max-width: 300px;
+  }
+`
+
+const BookTitle = styled.div`
+  margin-bottom: 20px;
+`
+
+const BookButtom = styled.div`
+  margin: 20px 0;
+`
+
+type FavButtonProps = {
+  isFavorite?: boolean
+}
+const FavButton = styled.a<FavButtonProps>`
+  font-size: 1rem;
+  width: 200px;
+  cursor: pointer;
+  padding: 2px 5px;
+  background-color: ${pros => (pros.isFavorite ? '#fef171' : '#f36766')};
+`
 
 function BookDetails({ info }: BookDetailsProps): JSX.Element {
   const [isFavorite, setIsFavorite] = React.useState(false)
@@ -33,17 +67,35 @@ function BookDetails({ info }: BookDetailsProps): JSX.Element {
   }
 
   return (
-    <>
-      <h1>{info.volumeInfo.title}</h1>
-      {info.volumeInfo.subtitle ? <h3>{info.volumeInfo.subtitle}</h3> : null}
-      <h4>description</h4>
-      <p>{info.volumeInfo.description}</p>
-      {!isFavorite ? (
-        <button onClick={() => handleAddFavorite()}>favoritar</button>
-      ) : (
-        <button onClick={() => handleRemoveFavorite()}>remover favorito</button>
-      )}
-    </>
+    <Container>
+      <BookImage>
+        <img src={info.volumeInfo.imageLinks.thumbnail || '/no-image.jpg'} />
+      </BookImage>
+      <div>
+        <BookTitle>
+          <h1>{info.volumeInfo.title}</h1>
+          {info.volumeInfo.subtitle ? (
+            <h3>{info.volumeInfo.subtitle}</h3>
+          ) : null}
+          <p>{info.volumeInfo.authors?.join(', ')}</p>
+        </BookTitle>
+        <h4>Description:</h4>
+        <div
+          dangerouslySetInnerHTML={{ __html: info.volumeInfo.description }}
+        />
+        <BookButtom>
+          {!isFavorite ? (
+            <FavButton isFavorite onClick={() => handleAddFavorite()}>
+              ⭐ favoritar
+            </FavButton>
+          ) : (
+            <FavButton onClick={() => handleRemoveFavorite()}>
+              ❌ remover favorito
+            </FavButton>
+          )}
+        </BookButtom>
+      </div>
+    </Container>
   )
 }
 
