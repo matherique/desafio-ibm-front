@@ -1,5 +1,7 @@
 # Desafio Técnico Front-End
 
+[![Test](https://github.com/matherique/desafio-ibm-front/actions/workflows/test.yml/badge.svg)](https://github.com/matherique/desafio-ibm-front/actions/workflows/test.yml)
+
 - Criar um sistema para buscar livros disponíveis na API do Google Books
 
 ## Requisitos funcionais
