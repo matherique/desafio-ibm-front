@@ -1,6 +1,7 @@
 # Desafio Técnico Front-End
 
 [![Test](https://github.com/matherique/desafio-ibm-front/actions/workflows/test.yml/badge.svg)](https://github.com/matherique/desafio-ibm-front/actions/workflows/test.yml)
+[![Coverage Status](https://coveralls.io/repos/github/matherique/desafio-ibm-front/badge.svg?branch=main)](https://coveralls.io/github/matherique/desafio-ibm-front?branch=main)
 
 - Criar um sistema para buscar livros disponíveis na API do Google Books
 
